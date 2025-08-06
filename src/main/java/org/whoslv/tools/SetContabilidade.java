@@ -1,6 +1,9 @@
 package org.whoslv.tools;
 
 import org.whoslv.database.Connect;
+import org.whoslv.database.select.SelectContabilidade;
+import org.whoslv.database.insert.InsertContabilidade;
+import org.whoslv.model.Contabilidade;
 
 import java.sql.*;
 import java.util.Scanner;
@@ -15,36 +18,52 @@ public class SetContabilidade {
         String nome;
         String emailSt;
         String emailNd;
-        String emailRd = "";
+        String emailRd = "0";
 
         while (startMenu) {
             System.out.print(showMenu());
             int choose = K.nextInt();
+            K.nextLine();
 
             if (choose == 1) {
                 System.out.print("Digite o ID da contabilidade (0 para todas): ");
                 int id = K.nextInt();
 
-                getContabilidade(id);
+                SelectContabilidade selectDAO = new SelectContabilidade();
+                if (id == 0) {
+                    selectDAO.getAll(conn).forEach(c -> System.out.println(c.getId() + " - " + c.getNome() + " - " + c.getEmailSt()));
+                } else {
+                    Contabilidade contabilidade = selectDAO.getById(conn, id);
+                    if (contabilidade != null) {
+                        System.out.println(contabilidade.getNome() + " - " + contabilidade.getEmailSt());
+                    } else {
+                        System.out.println("Contabilidade não encontrada!");
+                    }
+                }
             } else if (choose == 2) {
                 System.out.print("Nome: ");
-                nome = K.next();
+                nome = K.nextLine();
 
                 System.out.print("E-mail Primário: ");
-                emailSt = K.next();
+                emailSt = K.nextLine();
 
                 System.out.print("E-mail Secundário(0 caso não tenha): ");
-                emailNd = K.next();
+                emailNd = K.nextLine();
 
                 if (!emailNd.equals("0")) {
-                    System.out.println("E-mail Terciário(0 caso não tenha): ");
-                    emailRd = K.next();
+                    System.out.print("E-mail Terciário(0 caso não tenha): ");
+                    emailRd = K.nextLine();
                 }
 
-                if (insertContabilidade(conn, nome, emailSt, emailNd, emailRd)) {
-                    System.out.println("Contabilidade cadastrada!");
+                // Criar o objeto Contabilidade
+                Contabilidade contabilidade = new Contabilidade(nome, emailSt, emailNd, emailRd);
+
+                // Chamar a classe de inserção
+                InsertContabilidade insertDAO = new InsertContabilidade();
+                if (insertDAO.insert(conn, contabilidade)) {
+                    System.out.println("Contabilidade cadastrada com sucesso!");
                 } else {
-                    System.out.println("Houve um problema ao cadastrar a contabilidade!");
+                    System.out.println("Erro ao cadastrar contabilidade!");
                 }
             } else if (choose == 0) {
                 startMenu = false;
@@ -62,36 +81,5 @@ public class SetContabilidade {
         [ 2 ] Incluir Cadastro
         [ 0 ] Sair
         > """;
-    }
-
-    public static void getContabilidade(int id) {
-        if (id == 0) {
-            // todas
-        } else {
-            // especifico
-        }
-    }
-
-    public static boolean insertContabilidade(Connection conn, String nome, String emailSt, String emailNd, String emailRd) {
-        String sql = "INSERT INTO contabilidade (nome, email_st, email_nd, email_rd) VALUES (?, ?, ?, ?)";
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, nome);
-            stmt.setString(2, emailSt);
-            stmt.setString(3, emailNd.equals("0") ? "" : emailNd);
-            stmt.setString(4, emailRd.equals("0") ? "" : emailRd);
-
-            int rowAff = stmt.executeUpdate();
-
-            return rowAff > 0;
-        } catch (SQLException e) {
-            if (e.getSQLState().equals("23505")) {
-                System.out.println("E-mail principal já cadastrado!");
-            } else {
-                System.err.println("Erro no banco de dados: " + e.getMessage());
-            }
-
-            return false;
-        }
     }
 }
