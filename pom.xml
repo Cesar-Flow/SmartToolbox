@@ -27,4 +27,60 @@
             <version>42.7.3</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Plugin para gerar o JAR com as dependências -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!-- Caminho correto para a classe principal -->
+                            <mainClass>org.whoslv.tools.SetContabilidade</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef> <!-- Cria o JAR com as dependências -->
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase> <!-- Vai ser executado durante a fase de 'package' -->
+                        <goals>
+                            <goal>single</goal> <!-- Cria um único arquivo JAR -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Plugin para copiar o arquivo .env da raiz para o diretório correto dentro do JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/classes</outputDirectory> <!-- Diretório dentro do JAR -->
+                            <resources>
+                                <resource>
+                                    <directory>.</directory> <!-- Diretório raiz -->
+                                    <includes>
+                                        <include>.env</include> <!-- Copiar o .env -->
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
