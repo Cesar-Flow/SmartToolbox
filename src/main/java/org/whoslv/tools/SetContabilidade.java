@@ -2,7 +2,7 @@ package org.whoslv.tools;
 
 import org.whoslv.database.Connect;
 
-import java.sql.Connection;
+import java.sql.*;
 import java.util.Scanner;
 
 public class SetContabilidade {
@@ -15,7 +15,7 @@ public class SetContabilidade {
         String nome;
         String emailSt;
         String emailNd;
-        String emailRd = null;
+        String emailRd = "";
 
         while (startMenu) {
             System.out.print(showMenu());
@@ -41,8 +41,11 @@ public class SetContabilidade {
                     emailRd = K.next();
                 }
 
-                System.out.println("Contabilidade cadastrada");
-                System.out.printf("%s %s %s %s", nome, emailSt, emailNd, emailRd);
+                if (insertContabilidade(conn, nome, emailSt, emailNd, emailRd)) {
+                    System.out.println("Contabilidade cadastrada!");
+                } else {
+                    System.out.println("Houve um problema ao cadastrar a contabilidade!");
+                }
             } else if (choose == 0) {
                 startMenu = false;
             }
@@ -66,6 +69,29 @@ public class SetContabilidade {
             // todas
         } else {
             // especifico
+        }
+    }
+
+    public static boolean insertContabilidade(Connection conn, String nome, String emailSt, String emailNd, String emailRd) {
+        String sql = "INSERT INTO contabilidade (nome, email_st, email_nd, email_rd) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, nome);
+            stmt.setString(2, emailSt);
+            stmt.setString(3, emailNd.equals("0") ? "" : emailNd);
+            stmt.setString(4, emailRd.equals("0") ? "" : emailRd);
+
+            int rowAff = stmt.executeUpdate();
+
+            return rowAff > 0;
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23505")) {
+                System.out.println("E-mail principal já cadastrado!");
+            } else {
+                System.err.println("Erro no banco de dados: " + e.getMessage());
+            }
+
+            return false;
         }
     }
 }
