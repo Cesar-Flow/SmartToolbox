@@ -1,17 +1,37 @@
 package org.whoslv;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import org.whoslv.tools.XMLProcessor.NotasDoZip;
+import org.whoslv.tools.XMLProcessor.VisualPath;
+import org.whoslv.tools.XMLProcessor.XmlNotaExtractor;
+import org.whoslv.tools.XMLProcessor.XmlNotaProcessor;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        //final String absolutePath = "C:\\Users\\whoslv\\Documents\\EstudosJava\\XMLScope\\src\\main\\java\\org\\whoslv\\AnalisarXML\\XMLs";
+        final String absolutePath = (new VisualPath()).setPath();
+        final XmlNotaExtractor extractor = new XmlNotaExtractor();
+
+        File pasta = new File(absolutePath);
+
+        if (!pasta.exists() || !pasta.isDirectory()) {
+            System.err.println("Pasta inválida: " + absolutePath);
+            return;
         }
+
+        List<File> arquivosZip = Arrays.stream(Objects.requireNonNull(pasta.listFiles()))
+                .filter(f -> f.getName().toLowerCase().endsWith(".zip"))
+                .toList();
+
+        for (File arquivo : arquivosZip) { extractor.addZip(arquivo); }
+        extractor.extrairNotas();
+
+        List<NotasDoZip> notas = extractor.getNotas();
+
+        XmlNotaProcessor processor = new XmlNotaProcessor(notas);
+        System.out.println(processor); // chama automaticamente o toString()
     }
 }
