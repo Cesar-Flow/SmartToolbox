@@ -6,8 +6,14 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.whoslv.frontend.controllers.LoginController;
 import org.whoslv.frontend.controllers.LandpageController;
+import org.whoslv.frontend.database.Connect;
+import org.whoslv.frontend.database.Create;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Objects;
 
 // Classe para guardar Scene + Controller juntos
@@ -33,25 +39,44 @@ public class MainApp extends javafx.application.Application {
 
     private static Stage mainStage;
 
+    // Scenes
     private Stage stage;
     private Scene loginScene;
     private Scene landpageScene;
 
+    // Controllers
+    private LoginController loginController;
+    private LandpageController landpageController;
+
+    private final Connection conn;
+
+    public MainApp() throws SQLException {
+        conn = Connect.getConn();
+    }
+
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) throws IOException, SQLException {
+        // Conexão com o banco
+        if (conn != null) {
+            System.out.println("Banco pronto para uso!");
+        }
+        Create.createDatabase(conn);
+
         stage = primaryStage;
 
-        // Carrega as scenes e controllers de forma enxuta
-        SceneBundle<LoginController> login = loadScene("/org/whoslv/frontend/login.fxml", LoginController.class);
-        SceneBundle<LandpageController> land = loadScene("/org/whoslv/frontend/landpage.fxml", LandpageController.class);
-
-        // Injeta referência do MainApp nos controllers
-        login.getController().setMain(this);
-        land.getController().setMain(this);
-
-        // Guarda as scenes
+        // Carrega login
+        SceneBundle<LoginController> login = loadScene("/org/whoslv/frontend/fxml/login.fxml", LoginController.class);
         loginScene = login.getScene();
+        loginController = login.getController();
+        loginController.setMain(this);
+        loginController.setConnection(conn);
+
+        // Carrega landpage
+        SceneBundle<LandpageController> land = loadScene("/org/whoslv/frontend/fxml/landpage.fxml", LandpageController.class);
         landpageScene = land.getScene();
+        landpageController = land.getController();
+        landpageController.setMain(this);
+        landpageController.setConnection(conn);
 
         mainStage = primaryStage;
         stage.setTitle("Login");
@@ -61,8 +86,28 @@ public class MainApp extends javafx.application.Application {
         stage.setHeight(600);
         stage.setResizable(false);
 
-        stage.setScene(loginScene);
+        // Mostra login
+        //stage.setScene(loginScene);
+
+        Integer loggedUserId = getLoggedUserId();
+        if (loggedUserId != null) {
+            // Auto login
+            landpageController.autoLoginConfirm(); // ou outro método que inicialize a landpage
+            stage.setScene(landpageScene);
+        } else {
+            // Mostra login normalmente
+            stage.setScene(loginScene);
+        }
+
         stage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        if (conn != null && !conn.isClosed()) {
+            conn.close();
+        }
     }
 
     // Método genérico para carregar FXML + Scene + Controller
@@ -85,13 +130,39 @@ public class MainApp extends javafx.application.Application {
         return mainStage;
     }
 
+    // Troca para login
     public void gotoLogin() {
         stage.setScene(loginScene);
+        // opcional: método automático do loginController
+        // loginController.metodoAutomatico();
     }
 
+    // Troca para landpage e dispara método automático
     public void gotoLandpage() {
         stage.setScene(landpageScene);
+        // dispara método automático do controller assim que a scene é definida
+        if (landpageController != null) {
+            landpageController.autoLoginConfirm();
+        }
     }
+
+    private Integer getLoggedUserId() {
+        String sql = "SELECT u.id, u.username FROM users u JOIN sessions s ON u.id = s.user_id WHERE s.active = 1 LIMIT 1;\n";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // nenhum usuário logado
+    }
+
 
     public static void main(String[] args) {
         launch();

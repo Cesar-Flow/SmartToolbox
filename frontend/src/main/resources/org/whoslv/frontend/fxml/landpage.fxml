@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.whoslv.frontend.controllers.LandpageController"
+            prefHeight="600.0" prefWidth="800.0">
+
+    <!-- Topo com título e usuário -->
+    <top>
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label text="Smart Toolbox" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+            <Pane HBox.hgrow="ALWAYS"/> <!-- espaço flexível -->
+
+            <Label fx:id="helloText" style="-fx-font-size: 14px;"/>
+            <Button onAction="#onLogout" text="Sair" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 6;"/>
+        </HBox>
+    </top>
+
+    <!-- Conteúdo principal -->
+    <center>
+        <GridPane hgap="20" vgap="20" alignment="CENTER">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- Linha 1 -->
+            <VBox spacing="10" alignment="CENTER"
+                  style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5,0,0,2);"
+                  GridPane.rowIndex="0" GridPane.columnIndex="0">
+                <ImageView fitHeight="50" fitWidth="50"/>
+                <Label text="Ferramenta 1" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Descrição breve"/>
+                <Button text="Acessar"
+                        style="-fx-background-color: #2d8cf0; -fx-text-fill: white; -fx-background-radius: 6;"/>
+            </VBox>
+
+            <VBox spacing="10" alignment="CENTER"
+                  style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5,0,0,2);"
+                  GridPane.rowIndex="0" GridPane.columnIndex="1">
+                <ImageView fitHeight="50" fitWidth="50"/>
+                <Label text="Ferramenta 2" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Descrição breve"/>
+                <Button text="Acessar"
+                        style="-fx-background-color: #2d8cf0; -fx-text-fill: white; -fx-background-radius: 6;"/>
+            </VBox>
+
+            <VBox spacing="10" alignment="CENTER"
+                  style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5,0,0,2);"
+                  GridPane.rowIndex="0" GridPane.columnIndex="2">
+                <ImageView fitHeight="50" fitWidth="50"/>
+                <Label text="Ferramenta 3" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Descrição breve"/>
+                <Button text="Acessar"
+                        style="-fx-background-color: #2d8cf0; -fx-text-fill: white; -fx-background-radius: 6;"/>
+            </VBox>
+
+            <!-- Linha 2 -->
+            <VBox spacing="10" alignment="CENTER"
+                  style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5,0,0,2);"
+                  GridPane.rowIndex="1" GridPane.columnIndex="0">
+                <ImageView fitHeight="50" fitWidth="50"/>
+                <Label text="Ferramenta 4" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Descrição breve"/>
+                <Button text="Acessar"
+                        style="-fx-background-color: #2d8cf0; -fx-text-fill: white; -fx-background-radius: 6;"/>
+            </VBox>
+
+            <VBox spacing="10" alignment="CENTER"
+                  style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5,0,0,2);"
+                  GridPane.rowIndex="1" GridPane.columnIndex="1">
+                <ImageView fitHeight="50" fitWidth="50"/>
+                <Label text="Ferramenta 5" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Descrição breve"/>
+                <Button text="Acessar"
+                        style="-fx-background-color: #2d8cf0; -fx-text-fill: white; -fx-background-radius: 6;"/>
+            </VBox>
+
+            <VBox spacing="10" alignment="CENTER"
+                  style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5,0,0,2);"
+                  GridPane.rowIndex="1" GridPane.columnIndex="2">
+                <ImageView fitHeight="50" fitWidth="50"/>
+                <Label text="Ferramenta 6" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Descrição breve"/>
+                <Button text="Acessar"
+                        style="-fx-background-color: #2d8cf0; -fx-text-fill: white; -fx-background-radius: 6;"/>
+            </VBox>
+        </GridPane>
+    </center>
+</BorderPane>

@@ -1,24 +1,30 @@
 package org.whoslv.frontend.controllers;
 
-import io.github.cdimascio.dotenv.Dotenv;
+// import io.github.cdimascio.dotenv.Dotenv;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.whoslv.frontend.MainApp;
+import org.whoslv.frontend.database.PasswordUtils;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 
 public class LoginController {
     private MainApp main;
+    private Connection conn;
+    private final PopupUtils notification = new PopupUtils();
 
-    private final Dotenv dotenv = Dotenv.load();
+    //private final Dotenv dotenv = Dotenv.load();
     private final Stage mainStage = MainApp.getMainStage();
 
-    private final String defaultUser = dotenv.get("DEFAULT_USER");
-    private final String masterPass = dotenv.get("MASTER_PASS");
+    //private final String defaultUser = dotenv.get("DEFAULT_USER");
+    // private final String masterPass = dotenv.get("MASTER_PASS");
 
     @FXML
     private TextField user;
@@ -29,6 +35,7 @@ public class LoginController {
     public void setMain(MainApp main) {
         this.main = main;
     }
+    public void setConnection(Connection conn) { this.conn = conn; }
 
     @FXML
     public void initialize() {
@@ -48,16 +55,29 @@ public class LoginController {
     @FXML
     protected void onLogin() {
         if (user.getText().isEmpty() || pass.getText().isEmpty()) {
-            this.showAlert("Campos Obrigatórios", "Os campos de usuário e senha são obrigatórios!", mainStage);
+            notification.showAlert("Campos Obrigatórios", "Os campos de usuário e senha são obrigatórios!", mainStage);
             return;
         }
 
-        if (user.getText().equals(defaultUser) && pass.getText().equals(masterPass)) {
-            this.clean();
-            main.gotoLandpage();
-        }else {
-            this.showAlert("Credenciais inválidas", "As credenciais informadas são inválidas!", mainStage);
-            this.clean();
+        String sql = "SELECT password_hash FROM users WHERE username = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, user.getText());
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                String hashBanco = rs.getString("password_hash");
+                if (PasswordUtils.checkPassword(pass.getText(), hashBanco)) {
+                    updateLogged();
+                    main.gotoLandpage();
+                } else {
+                    notification.showAlert("Problema de Autenticação", "Senha incorreta!", mainStage);
+                    clean();
+                }
+            } else {
+                notification.showAlert("Problema de Autenticação", "Usuário não encontrado!", mainStage);
+                clean();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -66,22 +86,23 @@ public class LoginController {
         pass.setText("");
     }
 
-    private void showAlert(String msg, String title) {
-        Notifications.create()
-                .title(msg)
-                .text(title)
-                .position(Pos.TOP_RIGHT)
-                .hideAfter(Duration.seconds(3))
-                .showWarning();
+    private void updateLogged() {
+        String sqlReset = "UPDATE sessions SET active = 0 WHERE active = 1";
+        String sqlSet = "INSERT INTO sessions (user_id, active) VALUES ((SELECT id FROM users WHERE username = ?), 1)";
+
+        try (PreparedStatement resetStmt = conn.prepareStatement(sqlReset);
+             PreparedStatement setStmt = conn.prepareStatement(sqlSet)) {
+
+            // desativa todas as sessões ativas
+            resetStmt.executeUpdate();
+
+            // cria nova sessão ativa para o usuário atual
+            setStmt.setString(1, user.getText());
+            setStmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void showAlert(String msg, String title, Stage stage) {
-        Notifications.create()
-                .title(title)
-                .text(msg)
-                .owner(stage)
-                .position(Pos.TOP_CENTER)
-                .hideAfter(Duration.seconds(3))
-                .showWarning();
-    }
 }
