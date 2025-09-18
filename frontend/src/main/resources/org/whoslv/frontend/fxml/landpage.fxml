@@ -10,8 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.whoslv.frontend.controllers.LandpageController"
-            prefHeight="600.0" prefWidth="800.0">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.whoslv.frontend.controllers.LandpageController">
 
     <!-- Topo com título e usuário -->
     <top>
@@ -39,9 +38,9 @@
                   style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5,0,0,2);"
                   GridPane.rowIndex="0" GridPane.columnIndex="0">
                 <ImageView fitHeight="50" fitWidth="50"/>
-                <Label text="Ferramenta 1" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-                <Label text="Descrição breve"/>
-                <Button text="Acessar"
+                <Label text="NCM Nexus" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Buscar NCM pelo código de barras."/>
+                <Button text="Acessar" onAction="#enterNCM"
                         style="-fx-background-color: #2d8cf0; -fx-text-fill: white; -fx-background-radius: 6;"/>
             </VBox>
 
@@ -49,8 +48,8 @@
                   style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5,0,0,2);"
                   GridPane.rowIndex="0" GridPane.columnIndex="1">
                 <ImageView fitHeight="50" fitWidth="50"/>
-                <Label text="Ferramenta 2" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-                <Label text="Descrição breve"/>
+                <Label text="ContabilizaXML" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Contabiliza arquivos XML e identifica problemas."/>
                 <Button text="Acessar"
                         style="-fx-background-color: #2d8cf0; -fx-text-fill: white; -fx-background-radius: 6;"/>
             </VBox>

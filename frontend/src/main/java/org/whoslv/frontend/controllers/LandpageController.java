@@ -18,8 +18,7 @@ public class LandpageController {
     }
     public void setConnection(Connection conn) { this.conn = conn; }
 
-    @FXML
-    Label helloText;
+    @FXML Label helloText;
 
     @FXML
     private void onLogout() throws SQLException {
@@ -108,6 +107,15 @@ public class LandpageController {
         }
 
         return null;
+    }
+
+
+    // Abertura das páginas
+
+    // Entrar no GetNCM
+    @FXML
+    protected void enterNCM() {
+        main.gotoNCM();
     }
 
 }

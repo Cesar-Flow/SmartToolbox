@@ -21,7 +21,7 @@ public class PopupUtils {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
-    public void showAlert(String msg, String title) {
+    public void showAlert(String title, String msg) {
         Notifications.create()
                 .title(msg)
                 .text(title)
@@ -30,7 +30,7 @@ public class PopupUtils {
                 .showWarning();
     }
 
-    public void showAlert(String msg, String title, Stage stage) {
+    public static void showAlert(String title, String msg, Stage stage) {
         Notifications.create()
                 .title(title)
                 .text(msg)

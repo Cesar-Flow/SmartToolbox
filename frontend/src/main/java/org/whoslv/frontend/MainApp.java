@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.whoslv.frontend.controllers.GetNCMController;
 import org.whoslv.frontend.controllers.LoginController;
 import org.whoslv.frontend.controllers.LandpageController;
 import org.whoslv.frontend.database.Connect;
@@ -43,10 +44,12 @@ public class MainApp extends javafx.application.Application {
     private Stage stage;
     private Scene loginScene;
     private Scene landpageScene;
+    private Scene getNCMScene;
 
     // Controllers
     private LoginController loginController;
     private LandpageController landpageController;
+    private GetNCMController ncmController;
 
     private final Connection conn;
 
@@ -60,6 +63,7 @@ public class MainApp extends javafx.application.Application {
         if (conn != null) {
             System.out.println("Banco pronto para uso!");
         }
+
         Create.createDatabase(conn);
 
         stage = primaryStage;
@@ -77,6 +81,12 @@ public class MainApp extends javafx.application.Application {
         landpageController = land.getController();
         landpageController.setMain(this);
         landpageController.setConnection(conn);
+
+        // Carrega GetNCM
+        SceneBundle<GetNCMController> getNCM = loadScene("/org/whoslv/frontend/fxml/getncm.fxml", GetNCMController.class);
+        getNCMScene = getNCM.getScene();
+        ncmController = getNCM.getController();
+        ncmController.setMain(this);
 
         mainStage = primaryStage;
         stage.setTitle("Login");
@@ -133,17 +143,20 @@ public class MainApp extends javafx.application.Application {
     // Troca para login
     public void gotoLogin() {
         stage.setScene(loginScene);
-        // opcional: método automático do loginController
-        // loginController.metodoAutomatico();
     }
 
-    // Troca para landpage e dispara método automático
+    // Troca para landpage
     public void gotoLandpage() {
         stage.setScene(landpageScene);
-        // dispara método automático do controller assim que a scene é definida
+
         if (landpageController != null) {
             landpageController.autoLoginConfirm();
         }
+    }
+
+    // Troca para getNCM
+    public void gotoNCM() {
+        stage.setScene(getNCMScene);
     }
 
     private Integer getLoggedUserId() {

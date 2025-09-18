@@ -18,7 +18,6 @@ import java.sql.SQLException;
 public class LoginController {
     private MainApp main;
     private Connection conn;
-    private final PopupUtils notification = new PopupUtils();
 
     //private final Dotenv dotenv = Dotenv.load();
     private final Stage mainStage = MainApp.getMainStage();
@@ -26,11 +25,8 @@ public class LoginController {
     //private final String defaultUser = dotenv.get("DEFAULT_USER");
     // private final String masterPass = dotenv.get("MASTER_PASS");
 
-    @FXML
-    private TextField user;
-
-    @FXML
-    private PasswordField pass;
+    @FXML private TextField user;
+    @FXML private PasswordField pass;
 
     public void setMain(MainApp main) {
         this.main = main;
@@ -55,7 +51,7 @@ public class LoginController {
     @FXML
     protected void onLogin() {
         if (user.getText().isEmpty() || pass.getText().isEmpty()) {
-            notification.showAlert("Campos Obrigatórios", "Os campos de usuário e senha são obrigatórios!", mainStage);
+            PopupUtils.showAlert("Campos Obrigatórios", "Os campos de usuário e senha são obrigatórios!", mainStage);
             return;
         }
 
@@ -69,11 +65,11 @@ public class LoginController {
                     updateLogged();
                     main.gotoLandpage();
                 } else {
-                    notification.showAlert("Problema de Autenticação", "Senha incorreta!", mainStage);
+                    PopupUtils.showAlert("Problema de Autenticação", "Senha incorreta!", mainStage);
                     clean();
                 }
             } else {
-                notification.showAlert("Problema de Autenticação", "Usuário não encontrado!", mainStage);
+                PopupUtils.showAlert("Problema de Autenticação", "Usuário não encontrado!", mainStage);
                 clean();
             }
         } catch (SQLException e) {
