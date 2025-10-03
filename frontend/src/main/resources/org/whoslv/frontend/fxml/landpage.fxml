@@ -9,6 +9,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.whoslv.frontend.controllers.LandpageController">
 
@@ -33,11 +35,24 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
 
+            <!-- Definindo colunas iguais -->
+            <columnConstraints>
+                <ColumnConstraints percentWidth="33.33"/>
+                <ColumnConstraints percentWidth="33.33"/>
+                <ColumnConstraints percentWidth="33.33"/>
+            </columnConstraints>
+
+            <!-- Definindo linhas iguais -->
+            <rowConstraints>
+                <RowConstraints percentHeight="50"/>
+                <RowConstraints percentHeight="50"/>
+            </rowConstraints>
+
             <!-- Linha 1 -->
             <VBox spacing="10" alignment="CENTER"
                   style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5,0,0,2);"
                   GridPane.rowIndex="0" GridPane.columnIndex="0">
-                <ImageView fitHeight="50" fitWidth="50"/>
+                <ImageView fitHeight="50" fitWidth="50" pickOnBounds="true" preserveRatio="true" fx:id="ncmImage" />
                 <Label text="NCM Nexus" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
                 <Label text="Buscar NCM pelo código de barras."/>
                 <Button text="Acessar" onAction="#enterNCM"
@@ -47,20 +62,20 @@
             <VBox spacing="10" alignment="CENTER"
                   style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5,0,0,2);"
                   GridPane.rowIndex="0" GridPane.columnIndex="1">
-                <ImageView fitHeight="50" fitWidth="50"/>
+                <ImageView fitHeight="50" fitWidth="50" pickOnBounds="true" preserveRatio="true" fx:id="contabilizaImage" />
                 <Label text="ContabilizaXML" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
                 <Label text="Contabiliza arquivos XML e identifica problemas."/>
-                <Button text="Acessar"
+                <Button text="Acessar" onAction="#enterContabiliza"
                         style="-fx-background-color: #2d8cf0; -fx-text-fill: white; -fx-background-radius: 6;"/>
             </VBox>
 
             <VBox spacing="10" alignment="CENTER"
                   style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5,0,0,2);"
                   GridPane.rowIndex="0" GridPane.columnIndex="2">
-                <ImageView fitHeight="50" fitWidth="50"/>
-                <Label text="Ferramenta 3" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-                <Label text="Descrição breve"/>
-                <Button text="Acessar"
+                <ImageView fitHeight="50" fitWidth="50" pickOnBounds="true" preserveRatio="true" fx:id="guardImage"/>
+                <Label text="XML Guard" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Verifica a integridade de um arquivo XML"/>
+                <Button text="Acessar" onAction="#enterGuard"
                         style="-fx-background-color: #2d8cf0; -fx-text-fill: white; -fx-background-radius: 6;"/>
             </VBox>
 

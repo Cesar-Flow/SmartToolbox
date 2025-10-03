@@ -2,8 +2,11 @@ package org.whoslv.frontend.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.whoslv.frontend.MainApp;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,15 +21,38 @@ public class LandpageController {
     }
     public void setConnection(Connection conn) { this.conn = conn; }
 
+    @FXML private ImageView ncmImage;
+    @FXML private ImageView contabilizaImage;
+    @FXML private ImageView guardImage;
+
+    public void initialize() {
+        final String ICONPATH = "/org/whoslv/frontend/icons/";
+        String[] images = {
+                "NCMNexus.png", "ContabilizaXML.png", "XMLGuard.png"
+        };
+
+        ImageView[] imgViews = { ncmImage, contabilizaImage, guardImage };
+
+        for (int c = 0; c < images.length; c++) {
+            InputStream is = getClass().getResourceAsStream(ICONPATH + images[c]);
+            if (is == null) {
+                throw new IllegalStateException("Imagem não encontrada: " + images[c]);
+            }
+            Image image = new Image(is);
+            imgViews[c].setImage(image);
+        }
+    }
+
+
     @FXML Label helloText;
 
     @FXML
-    private void onLogout() throws SQLException {
+    private void onLogout() {
         quitLogged();
         main.gotoLogin();
     }
 
-    private void quitLogged() throws SQLException {
+    private void quitLogged() {
         String sqlReset = "UPDATE sessions SET active = 0 WHERE active = 1";
 
         try (PreparedStatement resetStmt = conn.prepareStatement(sqlReset)) {
@@ -40,7 +66,7 @@ public class LandpageController {
         String loggedUser = getLoggedUser();
         helloText.setText(loggedUser);
 
-        int autoLoginConfirm = 0;
+        int autoLoginConfirm;
         String sql = """
         SELECT s.id, s.auto_login_confirm, s.auto_login
         FROM sessions s
@@ -87,7 +113,7 @@ public class LandpageController {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro: " + e.getMessage());
         }
     }
 
@@ -103,7 +129,7 @@ public class LandpageController {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro: " + e.getMessage());
         }
 
         return null;
@@ -114,8 +140,13 @@ public class LandpageController {
 
     // Entrar no GetNCM
     @FXML
-    protected void enterNCM() {
-        main.gotoNCM();
-    }
+    protected void enterNCM() { main.gotoNCM(); }
 
+    // Entrar no ContabilizaXML
+    @FXML
+    protected void enterContabiliza() { main.gotoContabiliza(); }
+
+    // Entrar no XML Guard
+    @FXML
+    protected void enterGuard() { main.gotoGuard(); }
 }

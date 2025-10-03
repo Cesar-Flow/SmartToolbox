@@ -1,13 +1,12 @@
 package org.whoslv.frontend.controllers;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.whoslv.frontend.MainApp;
 
-public class GetNCMController {
+public class NCMNexusController {
     private MainApp main;
 
     public void setMain(MainApp main) { this.main = main; }

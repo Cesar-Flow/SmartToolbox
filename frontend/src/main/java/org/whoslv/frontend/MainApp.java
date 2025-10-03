@@ -4,9 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.whoslv.frontend.controllers.GetNCMController;
-import org.whoslv.frontend.controllers.LoginController;
-import org.whoslv.frontend.controllers.LandpageController;
+import org.whoslv.frontend.controllers.*;
 import org.whoslv.frontend.database.Connect;
 import org.whoslv.frontend.database.Create;
 
@@ -18,38 +16,28 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 // Classe para guardar Scene + Controller juntos
-class SceneBundle<T> {
-    private final Scene scene;
-    private final T controller;
-
-    public SceneBundle(Scene scene, T controller) {
-        this.scene = scene;
-        this.controller = controller;
-    }
-
-    public Scene getScene() {
-        return scene;
-    }
-
-    public T getController() {
-        return controller;
-    }
+record SceneBundle<T>(Scene scene, T controller) {
 }
 
 public class MainApp extends javafx.application.Application {
 
     private static Stage mainStage;
+    public final String FXMLPATH = "/org/whoslv/frontend/";
 
     // Scenes
     private Stage stage;
     private Scene loginScene;
     private Scene landpageScene;
-    private Scene getNCMScene;
+    private Scene ncmNexusScene;
+    private Scene contabilizaScene;
+    private Scene guardScene;
 
     // Controllers
     private LoginController loginController;
     private LandpageController landpageController;
-    private GetNCMController ncmController;
+    private NCMNexusController ncmController;
+    private ContabilizaXMLController contabilizaController;
+    private XMLGuardController guardController;
 
     private final Connection conn;
 
@@ -69,24 +57,35 @@ public class MainApp extends javafx.application.Application {
         stage = primaryStage;
 
         // Carrega login
-        SceneBundle<LoginController> login = loadScene("/org/whoslv/frontend/fxml/login.fxml", LoginController.class);
-        loginScene = login.getScene();
-        loginController = login.getController();
+        SceneBundle<LoginController> login = loadScene(FXMLPATH + "fxml/login.fxml", LoginController.class);
+        loginScene = login.scene();
+        loginController = login.controller();
         loginController.setMain(this);
         loginController.setConnection(conn);
 
         // Carrega landpage
-        SceneBundle<LandpageController> land = loadScene("/org/whoslv/frontend/fxml/landpage.fxml", LandpageController.class);
-        landpageScene = land.getScene();
-        landpageController = land.getController();
+        SceneBundle<LandpageController> land = loadScene(FXMLPATH + "fxml/landpage.fxml", LandpageController.class);
+        landpageScene = land.scene();
+        landpageController = land.controller();
         landpageController.setMain(this);
         landpageController.setConnection(conn);
 
-        // Carrega GetNCM
-        SceneBundle<GetNCMController> getNCM = loadScene("/org/whoslv/frontend/fxml/getncm.fxml", GetNCMController.class);
-        getNCMScene = getNCM.getScene();
-        ncmController = getNCM.getController();
+        // Carrega NCMNexus
+        SceneBundle<NCMNexusController> getNCM = loadScene(FXMLPATH + "fxml/ncmnexus.fxml", NCMNexusController.class);
+        ncmNexusScene = getNCM.scene();
+        ncmController = getNCM.controller();
         ncmController.setMain(this);
+
+        // Carrega ContabilizaXML
+        SceneBundle<ContabilizaXMLController> contabilizaXML = loadScene(FXMLPATH + "fxml/contabilizaxml.fxml", ContabilizaXMLController.class);
+        contabilizaScene = contabilizaXML.scene();
+        contabilizaController = contabilizaXML.controller();
+        contabilizaController.setMain(this);
+
+        SceneBundle<XMLGuardController> xmlGuard = loadScene(FXMLPATH + "fxml/xmlguard.fxml", XMLGuardController.class);
+        guardScene = xmlGuard.scene();
+        guardController = xmlGuard.controller();
+        guardController.setMain(this);
 
         mainStage = primaryStage;
         stage.setTitle("Login");
@@ -154,10 +153,16 @@ public class MainApp extends javafx.application.Application {
         }
     }
 
+
     // Troca para getNCM
-    public void gotoNCM() {
-        stage.setScene(getNCMScene);
-    }
+    public void gotoNCM() { stage.setScene(ncmNexusScene); }
+
+    // Troca para contabilizaXML
+    public void gotoContabiliza() { stage.setScene(contabilizaScene); }
+
+    // Troca para o XML Guard
+    public void gotoGuard() { stage.setScene(guardScene); }
+
 
     private Integer getLoggedUserId() {
         String sql = "SELECT u.id, u.username FROM users u JOIN sessions s ON u.id = s.user_id WHERE s.active = 1 LIMIT 1;\n";
@@ -170,7 +175,7 @@ public class MainApp extends javafx.application.Application {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro: " + e.getMessage());
         }
 
         return null; // nenhum usuário logado

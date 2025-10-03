@@ -20,10 +20,7 @@ public class LoginController {
     private Connection conn;
 
     //private final Dotenv dotenv = Dotenv.load();
-    private final Stage mainStage = MainApp.getMainStage();
-
-    //private final String defaultUser = dotenv.get("DEFAULT_USER");
-    // private final String masterPass = dotenv.get("MASTER_PASS");
+    private final Stage MS = MainApp.getMainStage();
 
     @FXML private TextField user;
     @FXML private PasswordField pass;
@@ -51,7 +48,7 @@ public class LoginController {
     @FXML
     protected void onLogin() {
         if (user.getText().isEmpty() || pass.getText().isEmpty()) {
-            PopupUtils.showAlert("Campos Obrigatórios", "Os campos de usuário e senha são obrigatórios!", mainStage);
+            PopupUtils.showAlert("Campos Obrigatórios", "Os campos de usuário e senha são obrigatórios!", MS);
             return;
         }
 
@@ -65,15 +62,15 @@ public class LoginController {
                     updateLogged();
                     main.gotoLandpage();
                 } else {
-                    PopupUtils.showAlert("Problema de Autenticação", "Senha incorreta!", mainStage);
+                    PopupUtils.showAlert("Problema de Autenticação", "Senha incorreta!", MS);
                     clean();
                 }
             } else {
-                PopupUtils.showAlert("Problema de Autenticação", "Usuário não encontrado!", mainStage);
+                PopupUtils.showAlert("Problema de Autenticação", "Usuário não encontrado!", MS);
                 clean();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro: " + e.getMessage());
         }
     }
 
@@ -97,7 +94,7 @@ public class LoginController {
             setStmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro: " + e.getMessage());
         }
     }
 

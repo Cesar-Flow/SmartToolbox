@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.whoslv.frontend.controllers.XMLGuardController">
+
+    <!-- TOPO -->
+    <top>
+        <ToolBar style="-fx-background-color: #2d2d2d; -fx-padding: 10;">
+            <Button text="Selecionar Pasta"
+                    onAction="#selecionarPasta"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" />
+            <Pane HBox.hgrow="ALWAYS" /> <!-- Espaçador -->
+            <Button text="Voltar"
+                    onAction="#backToLandpage"
+                    style="-fx-background-color: #d9534f; -fx-text-fill: white; -fx-font-weight: bold;" />
+        </ToolBar>
+    </top>
+
+    <!-- CENTRO -->
+    <center>
+        <SplitPane dividerPositions="0.5">
+            <!-- Lista de duplicadas -->
+            <VBox spacing="8" style="-fx-padding: 15;">
+                <Label text="Arquivos Duplicados"
+                       style="-fx-font-weight: bold; -fx-font-size: 14;" />
+                <ListView fx:id="listDuplicadas" prefHeight="300" />
+            </VBox>
+
+            <!-- Lista de faltantes -->
+            <VBox spacing="8" style="-fx-padding: 15;">
+                <Label text="Arquivos Faltando"
+                       style="-fx-font-weight: bold; -fx-font-size: 14;" />
+                <ListView fx:id="listFaltando" prefHeight="300" />
+            </VBox>
+        </SplitPane>
+    </center>
+
+    <!-- RODAPÉ -->
+    <bottom>
+        <Label fx:id="labelCaminho"
+               text="Nenhuma pasta selecionada"
+               style="-fx-padding: 10; -fx-font-size: 12; -fx-text-fill: gray;" />
+    </bottom>
+
+</BorderPane>

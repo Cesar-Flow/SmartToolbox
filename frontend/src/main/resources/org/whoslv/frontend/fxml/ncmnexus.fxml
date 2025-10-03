@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.whoslv.frontend.controllers.NCMNexusController"
+      spacing="15" alignment="CENTER" style="-fx-padding: 20;">
+
+    <Label text="Consulta NCM" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <!-- Campo de entrada para código de barras -->
+    <HBox spacing="10" alignment="CENTER">
+        <TextField fx:id="codigoBarrasField" promptText="Digite o código de barras" prefWidth="250" />
+        <Button text="Enviar" onAction="#buscarNCM" />
+    </HBox>
+
+    <!-- Campo para mostrar o NCM (inicialmente invisível) -->
+    <Label text="Código NCM:" fx:id="ncmLabel" visible="false" style="-fx-font-size: 14px;" />
+    <TextField fx:id="ncmField" editable="false" visible="false" prefWidth="200" />
+
+    <Button text="Voltar" onAction="#backToLandpage" />
+
+</VBox>
